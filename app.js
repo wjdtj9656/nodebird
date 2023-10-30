@@ -12,6 +12,7 @@ dotenv.config(); //process.env
 const pageRouter = require("./routes/page");
 const authRouter = require("./routes/auth");
 const postRouter = require("./routes/post");
+const userRouter = require("./routes/user");
 const passportConfig = require("./passport");
 const app = express();
 passportConfig();
@@ -32,6 +33,7 @@ sequelize
 app.use(morgan("dev"));
 //정적파일 위치 알려줌
 app.use(express.static(path.join(__dirname, "public")));
+app.use("/img", express.static(path.join(__dirname, "uploads")));
 //요청에서 들어오는 json데이터를 파싱하고 req.body객체에 저장함.
 app.use(express.json());
 //post되는 데이터(폼같은) 데이터를 req.body에 저장
@@ -55,6 +57,7 @@ app.use(passport.session());
 app.use("/", pageRouter);
 app.use("/auth", authRouter);
 app.use("/post", postRouter);
+app.use("/user", userRouter);
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
   error.status = 404;

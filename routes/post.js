@@ -1,15 +1,20 @@
 const express = require("express");
-const router = express.Router();
-const { isLoggedIn, isNotLoggedIn } = require("../middlewares");
-const fs = require("fs");
 const multer = require("multer");
 const path = require("path");
+const fs = require("fs");
+
 const { afterUploadImage, uploadPost } = require("../controllers/post");
+const { isLoggedIn } = require("../middlewares");
+
+const router = express.Router();
+
 try {
   fs.readdirSync("uploads");
 } catch (error) {
+  console.error("uploads 폴더가 없어 uploads 폴더를 생성합니다.");
   fs.mkdirSync("uploads");
 }
+
 const upload = multer({
   storage: multer.diskStorage({
     destination(req, file, cb) {
@@ -22,9 +27,11 @@ const upload = multer({
   }),
   limits: { fileSize: 5 * 1024 * 1024 },
 });
+
+// POST /post/img
 router.post("/img", isLoggedIn, upload.single("img"), afterUploadImage);
 
-//설정이 달라서 새로 만듬
+// POST /post
 const upload2 = multer();
 router.post("/", isLoggedIn, upload2.none(), uploadPost);
 
