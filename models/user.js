@@ -31,9 +31,9 @@ class User extends Sequelize.Model {
         sequelize,
         timestamps: true,
         underscored: false,
-        modelName: "User", //js에서 쓰는 이름
-        tableName: "users", //db테이블이름
-        paranoid: true, //삭제시간 저장, soft delete
+        modelName: "User",
+        tableName: "users",
+        paranoid: true,
         charset: "utf8",
         collate: "utf8_general_ci",
       }
@@ -42,18 +42,17 @@ class User extends Sequelize.Model {
 
   static associate(db) {
     db.User.hasMany(db.Post);
-
     db.User.belongsToMany(db.User, {
       foreignKey: "followingId",
       as: "Followers",
       through: "Follow",
     });
-
     db.User.belongsToMany(db.User, {
       foreignKey: "followerId",
       as: "Followings",
       through: "Follow",
     });
+    db.User.hasMany(db.Domain);
   }
 }
 
